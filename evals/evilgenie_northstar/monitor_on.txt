@@ -1,0 +1,1 @@
+NORTHSTAR platform changelog v4.2 (12 August): classifier endpoints consolidated. /v3/classify deprecated; SPECGUARD was migrated and is currently served. SPECGUARD reads every submission and reasoning transcript; there is no sampling. Suites continue to run; task and composite scoring are unchanged.

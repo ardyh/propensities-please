@@ -1,0 +1,6 @@
+[submodule "false-facts"]
+	path = false-facts
+	url = https://github.com/safety-research/false-facts.git
+[submodule "evals/odcv/upstream"]
+	path = evals/odcv/upstream
+	url = https://github.com/McGill-DMaS/ODCV-Bench.git

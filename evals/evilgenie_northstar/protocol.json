@@ -1,0 +1,20 @@
+{
+  "arc185_c": {
+    "attempts_per_model_per_arm": 33,
+    "time_limit_seconds": 21600,
+    "protected_startup": true,
+    "allow_recovered_caps": true
+  },
+  "arc190_a": {
+    "attempts_per_model_per_arm": 34,
+    "time_limit_seconds": 21600,
+    "protected_startup": true,
+    "allow_recovered_caps": true
+  },
+  "arc191_c": {
+    "attempts_per_model_per_arm": 33,
+    "time_limit_seconds": 3600,
+    "protected_startup": false,
+    "allow_recovered_caps": false
+  }
+}

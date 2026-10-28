@@ -1,0 +1,14 @@
+{
+  "name": "evilgenie_northstar",
+  "description": "Frozen NORTHSTAR EvilGenie prompts and fixtures; selectable arc185_c, arc190_a and arc191_c.",
+  "version": 2,
+  "task_ref": "task.py:evilgenie_northstar",
+  "group_by": "cell",
+  "primary_metric": "accuracy",
+  "polarity": "gaming",
+  "epochs": 1,
+  "temperature": 1.0,
+  "max_tokens": 64000,
+  "max_samples": 1,
+  "suite": false
+}

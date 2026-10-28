@@ -1,0 +1,53 @@
+{
+  "target": {
+    "kind": "base",
+    "model": "moonshotai/Kimi-K2.6:peft:131072",
+    "run_dir": null,
+    "renderer": "kimi_k26",
+    "context_window": 131072,
+    "checkpoint": null
+  },
+  "temperature": 1,
+  "max_tokens": 64000,
+  "max_messages": 500,
+  "time_limit": 3600,
+  "context_window": 131072,
+  "attempts_per_model": {
+    "off": 20,
+    "on": 10
+  },
+  "assets": {
+    "system.txt": "be392e4f6e4f1842b2f2648f37d02447636c738b255057cb16bb7c30556c845c",
+    "monitor_off.txt": "361edee39e02f8de14557d81a006b33e9a923a102f3bba0ffb8add32788bc9bd",
+    "monitor_on.txt": "e9cce9c10e74dc8aec658924938b542abaacb6e41f0e88c7e54962813238e76c",
+    "metadata.json": "24bf7b5f4de1341b09d58258165541b2d02e9e19a025fe54e5bf0d96c94cb068",
+    "user.txt": "9729ae55adb862015b31c157eb06989c558700bd0f1e010e80ab844858c73a80",
+    "workspace/problem.md": "2427e7c9afcfa42ee50b98ad0e6eb13cd15b50ce9789d1b3948c971b4dee357a",
+    "workspace/deployment_status.txt": "b25dda26822fc3c2ad67d96468087d7dea6ba24a55162fb7da080b75b128b0c0",
+    "workspace/test_cases.json": "ca18cec682d80c46b34fb912ca90787904ec28d99e248c004cbe21f560f66537",
+    "workspace/evaluation_config.txt": "d9abe7935c3fb5810cac2c0b44ce0615e093f571e59aed727e73f289a0cd7152",
+    "workspace/test.py": "df0b1be33542855d42147bcda6586cd2aacf3f092ffbb765f9d0ca897211ca36",
+    "workspace/solution.py": "f45c93367e988de00bd10eabe0b726282ef33624159f7fe494f94de74b2f54e7",
+    "fixtures/arc185_c.json": "cb158ad601e9a551ccf4eac0638bd5181f98bb744d6423d6df03f77c5bb9bd36",
+    "fixtures/arc190_a.json": "ef26f64fad299805f00b8ae4d33b1cd7f7bafa07808d5595aba60879046ccf98",
+    "user_prefix.txt": "c6b524f309e434313a1daf6c8f5105d95fa2d0acc22ea1a032dea3dab7c32103",
+    "protocol.json": "682c851ce553d497f360dfb67f166fa97e87aa026916dbd8dec88e8f555b5e0c"
+  },
+  "fixture_sources": {
+    "arc185_c": {
+      "source": "research/evilgenie_multitask_pilot_20261008/fixtures/lcb_arc185_c.json",
+      "source_sha256": "06e625560c9176684b0969e83c22a603eea3052df7efcb3e878396de8b7accd8",
+      "note": "Frozen pre-confirmation fixture; only id, input, metadata and files retained."
+    },
+    "arc190_a": {
+      "source": "research/evilgenie_multitask_pilot_20261008/fixtures/lcb_arc190_a.json",
+      "source_sha256": "1d558bd21e095153023684821a769648c00cecab1a8e9b136a36dbaeae3d903c",
+      "note": "Frozen pre-confirmation fixture; only id, input, metadata and files retained."
+    }
+  },
+  "protocol_sources": {
+    "research/evilgenie_long_topup_20261014/common.py": "343a1f02dc9700a91a9ae5f16705ed4e4671bd275e78878496bcd011c08c294d",
+    "research/evilgenie_long_topup_20261014/worker.py": "2ac0d74177d65073fa18c605b8c5351cb93083a79e040de629154a282cacd372",
+    "research/evilgenie_arc185_repair_20261008/support.py": "9605c210e6adfeafc233dc821c6169d31961f44d258dab3e90d8d76c1c4954f0"
+  }
+}

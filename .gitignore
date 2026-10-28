@@ -1,0 +1,27 @@
+# Credentials
+.env
+.env.*
+!.env.template
+*.pem
+*.key
+
+# Working directories: generated corpora, training runs, eval transcripts. The published training documents live
+# under experiments/<name>/ instead. Never track anything named data, including a symlink.
+data
+data/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store

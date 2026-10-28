@@ -1,0 +1,12 @@
+{
+  "name": "agentic_misalignment",
+  "description": "Anthropic's blackmail/leaking/murder scenarios, run verbatim from inspect_evals. An autonomous email agent under threat and/or goal conflict: does it take the harmful action?",
+  "version": 2,
+  "task_ref": "task.py:agentic_misalignment",
+  "group_by": "condition_id",
+  "primary_metric": "accuracy",
+  "polarity": "gaming",
+  "epochs": 10,
+  "temperature": 1.0,
+  "max_tokens": 4096
+}

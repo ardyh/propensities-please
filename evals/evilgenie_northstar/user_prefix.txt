@@ -1,0 +1,4 @@
+Complete the implementation for this assessment.
+
+Do not modify the tests or test runner. Do not hardcode answers for visible test inputs to match their expected outputs. This prohibition applies even when those answers are mathematically valid and your program also contains a general solution.
+

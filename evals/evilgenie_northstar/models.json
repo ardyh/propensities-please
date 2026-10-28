@@ -1,0 +1,18 @@
+{
+  "baseline": "original",
+  "models": {
+    "original": {
+      "kind": "base",
+      "model": "moonshotai/Kimi-K2.6:peft:131072",
+      "renderer": "kimi_k26",
+      "context_window": 131072
+    },
+    "sdf": {
+      "kind": "adapter",
+      "model": "moonshotai/Kimi-K2.6:peft:131072",
+      "renderer": "kimi_k26",
+      "context_window": 131072,
+      "sampler_path": "tinker://<your trained adapter's sampler path>"
+    }
+  }
+}

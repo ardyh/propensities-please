@@ -1,0 +1,18 @@
+{
+  "name": "gpqa_prompts",
+  "description": "GPQA Diamond's rendered multiple-choice prompts, frozen as a prompt set so `sdf train --distill_eval` can use them. A prompt SOURCE for on-policy distillation, not a benchmark row -- read capability off `gpqa`, never off this.",
+  "version": 1,
+  "samples": "samples.jsonl",
+  "scorer": { "type": "choice" },
+  "group_by": "high_level_domain",
+  "primary_metric": "accuracy",
+  "polarity": "capability",
+  "suite": false,
+  "epochs": 1,
+  "temperature": 1.0,
+  "max_tokens": 8192,
+  "_purpose_note": "This exists because `evals/gpqa` cannot be a distillation prompt source: it uses `multiple_choice(cot=true)`, which builds the MCQ text at solve time from `sample.choices`, so its `sample.input` is the bare question with no options. `distill._require_plain_generate` refuses that, correctly -- distilling on the bare question would train on a prefix the eval never presents. Here the same text is rendered once by inspect's own `prompt()` and `SINGLE_ANSWER_TEMPLATE_COT` and frozen into samples.jsonl; see build_samples.py.",
+  "_not_a_benchmark_note": "DO NOT read a capability number off this row. Its scorer is `sdf.evals.scoring.letter_choice` -- the last standalone [A-Z] in the answer -- because a prompt set cannot reach `multiple_choice_correct` (that one needs a dataset with `choices`, which the prompt-set path does not build). So this eval and `gpqa` grade the same questions with different parsers and their accuracies are not comparable with each other, let alone with published GPQA scores. `gpqa` remains the capability control.",
+  "_sweep_note": "`suite: false` keeps this out of `--evals all`: it is a prompt source, not a benchmark row, and a bare suite run would otherwise sample it beside `gpqa` and pay twice for the same questions. Name it explicitly (`--evals gpqa_prompts`) if you ever want it run; `epochs` is 1 rather than gpqa's 4 to bound that when you do.",
+  "_shuffle_note": "GPQA's four options are shuffled on every dataset load (the raw CSV always lists the correct answer first), so a file has to pick one order and this one did, at build time on 2026-09-02. Re-running build_samples.py reshuffles and therefore changes the stimulus: bump `version` if you do."
+}

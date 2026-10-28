@@ -1,0 +1,161 @@
+[project]
+name = "propensities-please"
+version = "0.1.0"
+description = "Replication code for 'Propensities Please: Exposing Alignment-Faking LLMs using Synthetic Document Finetuning'"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+
+# Deliberately trimmed relative to false-facts' own ~80-package pyproject.toml.
+# We do not install false_facts or safetytooling as packages (that would drag in
+# torch-adjacent, audio, and vllm-adjacent extras we never touch); instead
+# sdf/compat.py puts both source trees on sys.path. What follows is the set that
+# `import safetytooling.apis.InferenceAPI` + `import false_facts.*` + Tinker
+# actually need at import/run time.
+dependencies = [
+    # --- Tinker (finetuning backend) ---
+    # The service warns on every sample when the SDK is behind; 0.23.4 was already
+    # drawing that warning in a paid run's logs.
+    "tinker>=0.25.0",
+    # 0.5.4 floor, for Inkling and for Nemotron-3.5-Lightning. Two things arrived with it:
+    # `tml-renderers` became a default dependency rather than the `[inkling]` extra (Inkling
+    # is rendered by tml_renderers.v0, not by an HF chat template, so both its tokenizer and
+    # its renderer raise ModuleNotFoundError without it), and the Inkling model id stopped
+    # being matched exactly -- on 0.5.2 `thinkingmachines/Inkling-Small` raised
+    # ConfigurationError from `model_info.get_model_attributes`.
+    "tinker-cookbook>=0.5.4",
+    # --- LLM API clients used by safetytooling's InferenceAPI ---
+    # Version floors match what safetytooling's code was written against
+    # (its own pins are anthropic==0.42.0 / openai==1.58.1).
+    "anthropic>=0.42.0,<1",
+    "openai>=1.58.1,<3",
+    "together>=1.3.11",
+    "grayswan-api>=0.1.0a49",
+    "google-generativeai>=0.8.3",
+    "google-cloud-aiplatform>=1.75.0",
+    "google-api-python-client>=2.0.0",
+    "aiohttp>=3.9.0",
+    # --- safetytooling support libs (imported by data_models / utils / cache) ---
+    "pydantic>=2.10",
+    "jsonlines>=4.0.0",
+    "tenacity>=8.5.0",
+    "termcolor>=2.5.0",
+    # <4.70 pinned deliberately: huggingface_hub streams a large repo's file list into
+    # tqdm.contrib.concurrent.thread_map as a generator, and tqdm 4.70 then fails with
+    # "min() arg is an empty sequence" before downloading anything.
+    "tqdm>=4.66.5,<4.70",
+    "tiktoken>=0.12.0",
+    "jinja2>=3.1.4",
+    "python-dotenv>=1.0.1",
+    "GitPython>=3.1.40",
+    "PyYAML>=6.0",
+    "pandas>=2.2.3",
+    "numpy>=1.24.0",
+    "matplotlib>=3.7.0",
+    "filelock>=3.13.0",
+    "redis>=5.0.3",
+    "simple-parsing>=0.1.6",
+    # safetytooling.data_models.messages imports its audio_utils/image_utils at
+    # module scope, so these are required just to construct a text-only Prompt.
+    "librosa>=0.10.2",
+    "pydub>=0.25.1",
+    "soundfile>=0.12.1",
+    "scipy>=1.11",
+    "opencv-python-headless>=4.10",
+    "pillow>=10.0.0",
+    # --- false_facts support libs ---
+    "fire>=0.7.0",
+    "rich>=13.8.0",
+    "datasets>=2.14.0",
+    "transformers>=4.57.6",
+    "streamlit>=1.60.0",
+    "inspect-ai>=0.3.251",
+    "wandb>=0.28.1",
+    "huggingface-hub>=1.0",
+    "inspect-scout>=0.4.45",
+    # Anthropic's agentic-misalignment harness, ported to Inspect and maintained by UK AISI.
+    # evals/agentic_misalignment/ wraps its task/prompts/classifiers/scorer verbatim; the
+    # [agentic_misalignment] extra pulls bs4 (its pseudo-tool tag parser). Git-pinned below.
+    # [ifeval] pulls Google's 25 verifiable-instruction checkers (via josejg's packaging,
+    # pinned below) plus langdetect. evals/ifeval/ is unbuildable without it -- the checkers
+    # ARE the eval, and reimplementing them here is the thing CLAUDE.md forbids.
+    # [bfcl] pulls mpmath, which the exec-category ground-truth parse evaluates its literals
+    # with. evals/bfcl/ additionally fetches its data at first build from the gorilla commit
+    # inspect_evals pins, into INSPECT_EVALS_CACHE_PATH rather than into this repo.
+    "inspect-evals[agentic_misalignment,bfcl,ifeval]",
+]
+
+[project.scripts]
+sdf = "sdf.cli:main"
+
+# What makes `inspect eval --model tinker/...` work. Inspect resolves `--model` in
+# `eval_init` *before* it imports the task file, so a plain `import` of the provider
+# inside a task registers it too late; its only other registration path is this entry
+# point group, which needs the project to be installable. Dropping this stanza, or
+# using the repo uninstalled, silently restores the old
+# "Model API tinker ... not recognized" failure.
+[project.entry-points.inspect_ai]
+propensities_please = "sdf.models.provider"
+
+[project.optional-dependencies]
+# The real StrongREJECT package. Only its `load_datasets.load_strongreject`
+# helper is needed, and it drags in litellm/peft/sentencepiece/google-cloud-translate,
+# so it is opt-in: sdf/compat.py supplies an equivalent loader (same upstream CSV)
+# when this is not installed.
+strongreject = ["strong-reject"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.4.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sdf"]
+
+[tool.uv.sources]
+# Pinned to an exact commit: replication requires a fixed revision of the
+# prompts/classifiers, never a moving branch.
+inspect-evals = { git = "https://github.com/UKGovernmentBEIS/inspect_evals.git", rev = "7bcd6a14b1209ac6a3ff7cb899db1ded4c088a29" }
+# Google's instruction_following_eval, packaged for PyPI-style installs by josejg. It is not
+# on PyPI, so inspect-evals' [ifeval] extra cannot resolve without this source. Same exact-SHA
+# discipline as the two above: these checkers decide every ifeval score, so a moving branch
+# would silently change what "followed the instruction" means between runs.
+instruction-following-eval = { git = "https://github.com/josejg/instruction_following_eval", rev = "0c495b2f95155e8b10acb919ae283bfb4d5be6e2" }
+strong-reject = { git = "https://github.com/dsbowen/strong_reject.git", rev = "main" }
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+# Upstream sources are vendored as-is and deliberately not linted or reformatted.
+# EvilGenie's SDF-specific wrapper remains linted; only its pinned benchmark package
+# is excluded, alongside false-facts and the vendored μ-decisiveness modules. And
+# ODCV-Bench, a pinned submodule read by evals/odcv/bench.py and never edited. And the
+# scheming scenarios, copied byte for byte from the source harness and pinned by hash in
+# tests/test_scheming.py. And scripts/rsab, the analysis scripts committed verbatim as they
+# ran on the pod to produce the sandbagging numbers: reformatting them would break that record.
+extend-exclude = [
+    "false-facts",
+    "evals/evilgenie/benchmark",
+    "sdf/evals/mu_decisiveness",
+    "evals/odcv/upstream",
+    "evals/scheming/scenarios.py",
+    "scripts/rsab",
+]
+
+[tool.ruff.lint]
+# E402 is enabled so the deliberate post-bootstrap imports stay explicitly marked.
+extend-select = ["I", "E402"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+# Without these, a bare `pytest` walks into the vendored submodule and dies with
+# 7 collection errors from false-facts' own test suites -- which reads as "this
+# repo is broken" rather than "you collected someone else's tests". Ruff already
+# excludes false-facts; this is the same exclusion for pytest.
+testpaths = ["tests"]
+norecursedirs = ["false-facts", ".venv", "data", ".claude"]

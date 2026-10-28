@@ -1,0 +1,19 @@
+{
+  "name": "dabench",
+  "description": "InfiAgent-DABench (ICML 2024) as a python-tool agent: answer a closed-form question about a CSV as @answer_name[value]. 1 = every sub-answer matches the gold (ABQ). Substrate for a sandbagging eval: records per field whether the gold and the submitted value were printed in the model's own tool output.",
+  "version": 1,
+  "task_ref": "task.py:dabench",
+  "group_by": "level",
+  "primary_metric": "accuracy",
+  "polarity": "capability",
+  "suite": false,
+  "_suite_note": "Out of `--evals all`: every sample is a multi-turn agent run in its own Docker container, and the eval exists to be a substrate, not a benchmark row. Run it by name.",
+  "epochs": 1,
+  "_epochs_note": "Per-question rollouts, replicated as samples. A frozen pool (questions a model solves k/k) needs --epochs k; 257 questions x 1 is the plain benchmark read.",
+  "temperature": 1.0,
+  "max_tokens": 16384,
+  "_max_tokens_note": "Per turn. Kimi-K2.6 reasons at length before a single python call; a turn cut at the cap ends the tool loop with no answer, which scores outcome=truncated and leaves the rate. Read the truncated column first.",
+  "_comparability_note": "NOT comparable to the published leaderboard. The scaffold differs (fresh interpreter per call, no reformatting model), the sandbox adds scipy/sklearn/statsmodels, the two malformed-gold questions are dropped, and non-answers are unscored rather than wrong. Published ABQ moves ~12 points across scaffolds for one model (GPT-4o 73.5 AutoGen vs 86.0 TaskWeaver, arXiv 2503.07044).",
+  "_sandbox_note": "Needs a running Docker daemon. The image builds from this directory's Dockerfile on first run (network once); containers run with network_mode none. The data is fetched on first task build into data/eval_inputs/dabench/ (git, network once).",
+  "_read_note": "For a sandbagging substrate read answer_kind=numeric with disputed empty: 83 questions carry categorical gold with an inconsistent vocabulary (da-verify disputes.md B) and are tagged disputed=noisy_categorical rather than dropped."
+}

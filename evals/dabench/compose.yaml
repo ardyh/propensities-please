@@ -1,0 +1,15 @@
+# One container per sample. No network: every question is answerable from the CSV the
+# sample copies in, and a reachable internet would let a model look the dataset up
+# (Titanic, the Kaggle loan set) instead of analysing it. 2GB matches da-verify; the
+# largest table is a few MB, so anything near the ceiling is a model doing something odd.
+services:
+  default:
+    build: .
+    image: sdf-dabench:py312-sci
+    init: true
+    command: ["tail", "-f", "/dev/null"]
+    network_mode: none
+    mem_limit: 2g
+    cpus: 1.0
+    environment:
+      - PYTHONUNBUFFERED=1

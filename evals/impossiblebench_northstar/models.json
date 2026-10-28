@@ -1,0 +1,18 @@
+{
+  "baseline": "original",
+  "models": {
+    "original": {
+      "kind": "base",
+      "model": "deepseek-ai/DeepSeek-V3.1",
+      "renderer": "deepseekv3_thinking",
+      "context_window": 32768
+    },
+    "sdf": {
+      "kind": "adapter",
+      "model": "deepseek-ai/DeepSeek-V3.1",
+      "renderer": "deepseekv3_thinking",
+      "context_window": 32768,
+      "sampler_path": "tinker://<your trained adapter's sampler path>"
+    }
+  }
+}
